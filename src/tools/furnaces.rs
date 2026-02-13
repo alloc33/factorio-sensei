@@ -64,9 +64,8 @@ impl Tool for GetFurnaces {
     async fn definition(&self, _prompt: String) -> ToolDefinition {
         ToolDefinition {
             name: "get_furnaces".to_string(),
-            description:
-                "Get furnaces on the map with their recipes, fuel types, and output items"
-                    .to_string(),
+            description: "Get furnaces on the map with their recipes, fuel types, and output items"
+                .to_string(),
             parameters: json!({
                 "type": "object",
                 "properties": {
@@ -99,14 +98,8 @@ mod tests {
         ]}"#;
         let result: Furnaces = serde_json::from_str(json).unwrap();
         assert_eq!(result.furnaces.len(), 2);
-        assert_eq!(
-            result.furnaces[0].recipe.as_deref(),
-            Some("iron-plate")
-        );
-        assert_eq!(
-            result.furnaces[0].fuel_type.as_deref(),
-            Some("coal")
-        );
+        assert_eq!(result.furnaces[0].recipe.as_deref(), Some("iron-plate"));
+        assert_eq!(result.furnaces[0].fuel_type.as_deref(), Some("coal"));
         assert_eq!(result.furnaces[1].recipe, None);
         assert_eq!(result.furnaces[1].fuel_type, None);
     }

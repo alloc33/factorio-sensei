@@ -73,7 +73,8 @@ mod tests {
 
     #[test]
     fn test_parse_inventory() {
-        let json = r#"{"items":[{"name":"iron-plate","count":50},{"name":"copper-plate","count":25}]}"#;
+        let json =
+            r#"{"items":[{"name":"iron-plate","count":50},{"name":"copper-plate","count":25}]}"#;
         let inv: PlayerInventory = serde_json::from_str(json).unwrap();
         assert_eq!(inv.items.len(), 2);
         assert_eq!(inv.items[0].name, "iron-plate");
