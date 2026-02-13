@@ -4,14 +4,15 @@
 //! (resources, trees, simple-entities) to focus on player-built structures.
 //! Capped at 50 results to keep RCON responses small.
 
-use rig::completion::ToolDefinition;
-use rig::tool::Tool;
+use rig::{completion::ToolDefinition, tool::Tool};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-use crate::error::SenseiError;
-use crate::lua;
-use crate::rcon_ext::{execute_lua_json, SharedRcon};
+use crate::{
+    error::SenseiError,
+    lua,
+    rcon_ext::{execute_lua_json, SharedRcon},
+};
 
 /// Finds up to 50 non-resource, non-decorative entities near the player.
 pub struct GetNearbyEntities {
@@ -19,7 +20,7 @@ pub struct GetNearbyEntities {
 }
 
 impl GetNearbyEntities {
-    pub fn new(rcon: SharedRcon) -> Self {
+    pub const fn new(rcon: SharedRcon) -> Self {
         Self { rcon }
     }
 }

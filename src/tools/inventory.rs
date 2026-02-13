@@ -4,14 +4,15 @@
 //! same item, and returns `[{name, count}]`. Lets the coach check whether
 //! the player has enough materials for a suggested build.
 
-use rig::completion::ToolDefinition;
-use rig::tool::Tool;
+use rig::{completion::ToolDefinition, tool::Tool};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-use crate::error::SenseiError;
-use crate::lua;
-use crate::rcon_ext::{execute_lua_json, SharedRcon};
+use crate::{
+    error::SenseiError,
+    lua,
+    rcon_ext::{execute_lua_json, SharedRcon},
+};
 
 /// Returns every item in the player's main inventory, deduplicated by name.
 pub struct GetPlayerInventory {
@@ -19,7 +20,7 @@ pub struct GetPlayerInventory {
 }
 
 impl GetPlayerInventory {
-    pub fn new(rcon: SharedRcon) -> Self {
+    pub const fn new(rcon: SharedRcon) -> Self {
         Self { rcon }
     }
 }

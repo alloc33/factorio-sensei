@@ -8,12 +8,11 @@
 //! - `FACTORIO_RCON_PASS` — default `factorio`
 
 use std::sync::Arc;
-use tokio::sync::Mutex;
 
 use factorio_rcon::RconClient;
-use factorio_sensei::tools::*;
-use factorio_sensei::SharedRcon;
+use factorio_sensei::{tools::*, SharedRcon};
 use rig::tool::Tool;
+use tokio::sync::Mutex;
 
 fn rcon_addr() -> String {
     std::env::var("FACTORIO_RCON_ADDR").unwrap_or_else(|_| "127.0.0.1:27015".to_string())

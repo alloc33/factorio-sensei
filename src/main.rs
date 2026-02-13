@@ -1,5 +1,7 @@
-use std::io::{self, BufRead, Write};
-use std::sync::Arc;
+use std::{
+    io::{self, BufRead, Write},
+    sync::Arc,
+};
 
 use factorio_rcon::RconClient;
 use factorio_sensei::agent;
@@ -21,7 +23,7 @@ async fn main() -> anyhow::Result<()> {
         model.as_deref().unwrap_or(agent::DEFAULT_MODEL)
     );
 
-    let coach = agent::build_coach(rcon, model.as_deref());
+    let coach = agent::build_coach(&rcon, model.as_deref());
 
     // Minimal REPL — Phase 4 upgrades this to reedline
     let stdin = io::stdin();

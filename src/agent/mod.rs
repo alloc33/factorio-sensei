@@ -1,12 +1,12 @@
 pub mod prompts;
 
-use rig::agent::Agent;
-use rig::client::{CompletionClient, ProviderClient};
-use rig::providers::anthropic;
-use rig::providers::anthropic::completion::CompletionModel;
+use rig::{
+    agent::Agent,
+    client::{CompletionClient, ProviderClient},
+    providers::{anthropic, anthropic::completion::CompletionModel},
+};
 
-use crate::tools::*;
-use crate::SharedRcon;
+use crate::{tools::*, SharedRcon};
 
 pub const DEFAULT_MODEL: &str = "claude-sonnet-4-5-20250929";
 
@@ -14,7 +14,7 @@ pub const DEFAULT_MODEL: &str = "claude-sonnet-4-5-20250929";
 ///
 /// Reads `ANTHROPIC_API_KEY` from the environment. Pass `model` to override the
 /// default Claude model (e.g. `"claude-opus-4-0"`).
-pub fn build_coach(rcon: SharedRcon, model: Option<&str>) -> Agent<CompletionModel> {
+pub fn build_coach(rcon: &SharedRcon, model: Option<&str>) -> Agent<CompletionModel> {
     let client = anthropic::Client::from_env();
     let model = model.unwrap_or(DEFAULT_MODEL);
 

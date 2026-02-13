@@ -4,14 +4,15 @@
 //! input (produced) and output (consumed) counts. The coach can compare these
 //! to spot bottlenecks (e.g. consuming more iron plates than producing).
 
-use rig::completion::ToolDefinition;
-use rig::tool::Tool;
+use rig::{completion::ToolDefinition, tool::Tool};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-use crate::error::SenseiError;
-use crate::lua;
-use crate::rcon_ext::{execute_lua_json, SharedRcon};
+use crate::{
+    error::SenseiError,
+    lua,
+    rcon_ext::{execute_lua_json, SharedRcon},
+};
 
 /// Fetches all-time produced/consumed counts for one item on nauvis.
 pub struct GetProductionStats {
@@ -19,7 +20,7 @@ pub struct GetProductionStats {
 }
 
 impl GetProductionStats {
-    pub fn new(rcon: SharedRcon) -> Self {
+    pub const fn new(rcon: SharedRcon) -> Self {
         Self { rcon }
     }
 }

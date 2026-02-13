@@ -13,5 +13,77 @@ thiserror = "2"
 tracing = "0.1"
 anyhow = "1"
 
+[lints.rust]
+unused_imports = "deny"
+unused_variables = "warn"
+unreachable_code = "warn"
+unreachable_patterns = "warn"
+
+[lints.clippy]
+# ── Use Self, not MyStruct ──
+use_self = "warn"
+
+# ── Idiomatic match/if-let ──
+collapsible_match = "deny"
+single_match = "deny"
+single_match_else = "warn"
+match_like_matches_macro = "deny"
+manual_unwrap_or = "deny"
+manual_unwrap_or_default = "deny"
+manual_let_else = "warn"
+redundant_pattern_matching = "deny"
+if_same_then_else = "deny"
+option_if_let_else = "warn"
+if_not_else = "warn"
+match_same_arms = "warn"
+match_wildcard_for_single_variants = "warn"
+unnested_or_patterns = "warn"
+equatable_if_let = "warn"
+
+# ── Idiomatic iterators & closures ──
+redundant_closure_for_method_calls = "warn"
+redundant_closure = "deny"
+map_flatten = "deny"
+manual_clamp = "deny"
+iter_on_single_items = "warn"
+cloned_instead_of_copied = "warn"
+flat_map_option = "warn"
+implicit_clone = "warn"
+explicit_iter_loop = "warn"
+needless_for_each = "warn"
+map_unwrap_or = "warn"
+
+# ── Modern Rust style ──
+uninlined_format_args = "deny"
+needless_raw_string_hashes = "deny"
+manual_string_new = "deny"
+redundant_else = "deny"
+semicolon_if_nothing_returned = "warn"
+unreadable_literal = "warn"
+bool_to_int_with_if = "warn"
+default_trait_access = "warn"
+cast_lossless = "warn"
+
+# ── Avoid unnecessary work ──
+or_fun_call = "deny"
+needless_pass_by_value = "warn"
+needless_update = "deny"
+unnecessary_unwrap = "deny"
+useless_let_if_seq = "deny"
+zero_prefixed_literal = "deny"
+
+# ── const correctness ──
+missing_const_for_fn = "warn"
+
+# ── Correctness / safety ──
+significant_drop_tightening = "warn"
+
+# ── Complexity signals ──
+cognitive_complexity = "warn"
+too_many_arguments = "warn"
+type_complexity = "warn"
+result_large_err = "warn"
+too_many_lines = "warn"
+
 [dev-dependencies]
 tokio = { version = "1", features = ["full"] }

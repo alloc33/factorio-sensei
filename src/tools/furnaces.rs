@@ -5,14 +5,15 @@
 //! inventory (first output item). All three are optional — an idle furnace
 //! with no fuel will have all `None`.
 
-use rig::completion::ToolDefinition;
-use rig::tool::Tool;
+use rig::{completion::ToolDefinition, tool::Tool};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-use crate::error::SenseiError;
-use crate::lua;
-use crate::rcon_ext::{execute_lua_json, SharedRcon};
+use crate::{
+    error::SenseiError,
+    lua,
+    rcon_ext::{execute_lua_json, SharedRcon},
+};
 
 /// Lists furnaces with their positions, active recipes, fuel types, and output items.
 pub struct GetFurnaces {
@@ -20,7 +21,7 @@ pub struct GetFurnaces {
 }
 
 impl GetFurnaces {
-    pub fn new(rcon: SharedRcon) -> Self {
+    pub const fn new(rcon: SharedRcon) -> Self {
         Self { rcon }
     }
 }

@@ -1,7 +1,7 @@
 use std::sync::Arc;
-use tokio::sync::Mutex;
 
 use factorio_rcon::RconClient;
+use tokio::sync::Mutex;
 
 use crate::error::SenseiError;
 
@@ -16,9 +16,9 @@ pub type SharedRcon = Arc<Mutex<RconClient>>;
 /// The IIFE should return a plain Lua table (no userdata).
 /// This function checks for `{"error":"no_player"}` and converts it to `SenseiError::NoPlayer`.
 pub async fn execute_lua_json(rcon: &SharedRcon, lua_iife: &str) -> Result<String, SenseiError> {
-    let command = format!("/c rcon.print(helpers.table_to_json({}))", lua_iife);
-    let mut client = rcon.lock().await;
-    let response = client.execute(&command).await?;
+    let command = format!("/c rcon.print(helpers.table_to_json({lua_iife}))");
+
+    let response = rcon.lock().await.execute(&command).await?;
 
     // Check for Lua-side error responses
     if response.contains(r#""error":"no_player""#) {
@@ -95,7 +95,7 @@ mod tests {
 
     #[test]
     fn test_json_array_passes_check() {
-        let response = r#"[1,2,3]"#;
+        let response = r"[1,2,3]";
         let trimmed = response.trim_start();
         assert!(trimmed.starts_with('['));
     }

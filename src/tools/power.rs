@@ -4,14 +4,15 @@
 //! `electric_network_statistics`. Returns zero values if no poles exist yet.
 //! Satisfaction < 1.0 means the factory is experiencing brownouts.
 
-use rig::completion::ToolDefinition;
-use rig::tool::Tool;
+use rig::{completion::ToolDefinition, tool::Tool};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-use crate::error::SenseiError;
-use crate::lua;
-use crate::rcon_ext::{execute_lua_json, SharedRcon};
+use crate::{
+    error::SenseiError,
+    lua,
+    rcon_ext::{execute_lua_json, SharedRcon},
+};
 
 /// Reads the power grid via the first electric pole's network statistics.
 pub struct GetPowerStats {
@@ -19,7 +20,7 @@ pub struct GetPowerStats {
 }
 
 impl GetPowerStats {
-    pub fn new(rcon: SharedRcon) -> Self {
+    pub const fn new(rcon: SharedRcon) -> Self {
         Self { rcon }
     }
 }
@@ -71,8 +72,8 @@ mod tests {
     fn test_parse_power_stats() {
         let json = r#"{"production_watts":5000000,"consumption_watts":3500000,"satisfaction":1.0}"#;
         let stats: PowerStats = serde_json::from_str(json).unwrap();
-        assert_eq!(stats.production_watts, 5000000.0);
-        assert_eq!(stats.consumption_watts, 3500000.0);
+        assert_eq!(stats.production_watts, 5_000_000.0);
+        assert_eq!(stats.consumption_watts, 3_500_000.0);
         assert_eq!(stats.satisfaction, 1.0);
     }
 

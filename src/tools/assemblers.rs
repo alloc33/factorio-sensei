@@ -4,14 +4,15 @@
 //! For each machine, reports its prototype name, position, assigned recipe
 //! (if any), and effective crafting speed (accounting for modules/beacons).
 
-use rig::completion::ToolDefinition;
-use rig::tool::Tool;
+use rig::{completion::ToolDefinition, tool::Tool};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-use crate::error::SenseiError;
-use crate::lua;
-use crate::rcon_ext::{execute_lua_json, SharedRcon};
+use crate::{
+    error::SenseiError,
+    lua,
+    rcon_ext::{execute_lua_json, SharedRcon},
+};
 
 /// Lists assembling machines with their positions, recipes, and crafting speeds.
 pub struct GetAssemblers {
@@ -19,7 +20,7 @@ pub struct GetAssemblers {
 }
 
 impl GetAssemblers {
-    pub fn new(rcon: SharedRcon) -> Self {
+    pub const fn new(rcon: SharedRcon) -> Self {
         Self { rcon }
     }
 }

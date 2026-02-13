@@ -4,14 +4,15 @@
 //! Useful for the coach to understand where the player is and what they're
 //! likely working on (e.g. near ore patches, at main bus, exploring).
 
-use rig::completion::ToolDefinition;
-use rig::tool::Tool;
+use rig::{completion::ToolDefinition, tool::Tool};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-use crate::error::SenseiError;
-use crate::lua;
-use crate::rcon_ext::{execute_lua_json, SharedRcon};
+use crate::{
+    error::SenseiError,
+    lua,
+    rcon_ext::{execute_lua_json, SharedRcon},
+};
 
 /// Reads the first connected player's x/y coordinates and surface name.
 pub struct GetPlayerPosition {
@@ -19,7 +20,7 @@ pub struct GetPlayerPosition {
 }
 
 impl GetPlayerPosition {
-    pub fn new(rcon: SharedRcon) -> Self {
+    pub const fn new(rcon: SharedRcon) -> Self {
         Self { rcon }
     }
 }

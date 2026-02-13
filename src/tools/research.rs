@@ -4,14 +4,15 @@
 //! from `research_queue`. All fields are optional — if no research is active,
 //! `current` and `progress` will be `None`.
 
-use rig::completion::ToolDefinition;
-use rig::tool::Tool;
+use rig::{completion::ToolDefinition, tool::Tool};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-use crate::error::SenseiError;
-use crate::lua;
-use crate::rcon_ext::{execute_lua_json, SharedRcon};
+use crate::{
+    error::SenseiError,
+    lua,
+    rcon_ext::{execute_lua_json, SharedRcon},
+};
 
 /// Returns current research tech, completion progress, and queued techs.
 pub struct GetResearchStatus {
@@ -19,7 +20,7 @@ pub struct GetResearchStatus {
 }
 
 impl GetResearchStatus {
-    pub fn new(rcon: SharedRcon) -> Self {
+    pub const fn new(rcon: SharedRcon) -> Self {
         Self { rcon }
     }
 }

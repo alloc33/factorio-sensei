@@ -4,14 +4,15 @@
 //! game-state query, so it doesn't require a connected player. Returns a
 //! `LuaError` if the recipe name doesn't exist.
 
-use rig::completion::ToolDefinition;
-use rig::tool::Tool;
+use rig::{completion::ToolDefinition, tool::Tool};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-use crate::error::SenseiError;
-use crate::lua;
-use crate::rcon_ext::{execute_lua_json, SharedRcon};
+use crate::{
+    error::SenseiError,
+    lua,
+    rcon_ext::{execute_lua_json, SharedRcon},
+};
 
 /// Looks up a recipe prototype by name and returns its crafting details.
 pub struct GetRecipe {
@@ -19,7 +20,7 @@ pub struct GetRecipe {
 }
 
 impl GetRecipe {
-    pub fn new(rcon: SharedRcon) -> Self {
+    pub const fn new(rcon: SharedRcon) -> Self {
         Self { rcon }
     }
 }
