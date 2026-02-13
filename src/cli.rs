@@ -1,0 +1,18 @@
+use clap::Parser;
+
+#[derive(Parser)]
+#[command(name = "factorio-sensei")]
+#[command(about = "AI coaching copilot for Factorio 2.x")]
+pub struct Cli {
+    /// RCON server address (host:port)
+    #[arg(long, env = "FACTORIO_RCON_ADDR", default_value = "127.0.0.1:27015")]
+    pub addr: String,
+
+    /// RCON password
+    #[arg(long, env = "FACTORIO_RCON_PASS", default_value = "factorio")]
+    pub password: String,
+
+    /// Claude model override
+    #[arg(long, env = "FACTORIO_MODEL")]
+    pub model: Option<String>,
+}
