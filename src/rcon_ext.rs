@@ -28,6 +28,12 @@ pub async fn execute_lua_json(rcon: &SharedRcon, lua_iife: &str) -> Result<Strin
         return Err(SenseiError::LuaError(msg));
     }
 
+    // Catch plain-text Factorio errors (e.g. Lua syntax errors) before they reach serde_json
+    let trimmed = response.trim_start();
+    if !trimmed.starts_with('{') && !trimmed.starts_with('[') {
+        return Err(SenseiError::LuaError(response));
+    }
+
     Ok(response)
 }
 
@@ -70,5 +76,27 @@ mod tests {
     fn test_extract_lua_error_not_json() {
         let response = "not json at all";
         assert_eq!(extract_lua_error(response), None);
+    }
+
+    #[test]
+    fn test_non_json_response_detected() {
+        // Simulate what happens when Factorio returns a plain-text Lua error
+        let response = "Cannot execute command. Error in assignment...";
+        let trimmed = response.trim_start();
+        assert!(!trimmed.starts_with('{') && !trimmed.starts_with('['));
+    }
+
+    #[test]
+    fn test_json_object_passes_check() {
+        let response = r#"{"x":1.5,"y":2.0}"#;
+        let trimmed = response.trim_start();
+        assert!(trimmed.starts_with('{'));
+    }
+
+    #[test]
+    fn test_json_array_passes_check() {
+        let response = r#"[1,2,3]"#;
+        let trimmed = response.trim_start();
+        assert!(trimmed.starts_with('['));
     }
 }

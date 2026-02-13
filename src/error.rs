@@ -14,4 +14,7 @@ pub enum SenseiError {
 
     #[error("No player connected")]
     NoPlayer,
+
+    #[error("Unexpected response: {0}")]
+    UnexpectedResponse(String),
 }

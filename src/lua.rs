@@ -64,24 +64,16 @@ pub fn production_stats(item: &str) -> String {
 pub fn power_stats() -> String {
     format!(
         "(function() {PLAYER_CHECK} \
-         local surface = p.surface \
-         local poles = surface.find_entities_filtered{{type=\"electric-pole\", limit=1}} \
+         local poles = p.surface.find_entities_filtered{{type=\"electric-pole\", limit=1}} \
          if #poles == 0 then \
            return {{production_watts=0, consumption_watts=0, satisfaction=1.0}} \
          end \
-         local net = poles[1].electric_network_id \
-         local stats = game.get_entity_by_tag and nil \
-         local prod = 0 \
-         local cons = 0 \
          local network = poles[1].electric_network_statistics \
-         if network then \
-           for name, _ in pairs(network.input_counts) do \
-             prod = prod + network.get_input_count(name) \
-           end \
-           for name, _ in pairs(network.output_counts) do \
-             cons = cons + network.get_output_count(name) \
-           end \
+         if not network then \
+           return {{production_watts=0, consumption_watts=0, satisfaction=1.0}} \
          end \
+         local prod = network.get_flow_count{{input=true, precision_index=defines.flow_precision_index.one_second}} \
+         local cons = network.get_flow_count{{input=false, precision_index=defines.flow_precision_index.one_second}} \
          local satisfaction = 1.0 \
          if cons > 0 then satisfaction = math.min(1.0, prod / cons) end \
          return {{production_watts=prod, consumption_watts=cons, satisfaction=satisfaction}} \
@@ -364,6 +356,8 @@ mod tests {
         let lua = power_stats();
         assert!(lua.contains("electric-pole"));
         assert!(lua.contains("electric_network_statistics"));
+        assert!(lua.contains("get_flow_count"));
+        assert!(lua.contains("precision_index=defines.flow_precision_index.one_second"));
     }
 
     #[test]
