@@ -14,11 +14,15 @@ pub const DEFAULT_MODEL: &str = "claude-sonnet-4-5-20250929";
 ///
 /// Reads `ANTHROPIC_API_KEY` from the environment. Pass `model` to override the
 /// default Claude model (e.g. `"claude-opus-4-0"`).
-pub fn build_coach(rcon: &SharedRcon, model: Option<&str>) -> Agent<CompletionModel> {
+pub fn build_coach(
+    rcon: &SharedRcon,
+    model: Option<&str>,
+    wiki_articles: &[String],
+) -> Agent<CompletionModel> {
     let client = anthropic::Client::from_env();
     let model = model.unwrap_or(DEFAULT_MODEL);
 
-    client
+    let mut builder = client
         .agent(model)
         .preamble(prompts::COACH_SYSTEM_PROMPT)
         .tool(GetPlayerPosition::new(rcon.clone()))
@@ -31,6 +35,11 @@ pub fn build_coach(rcon: &SharedRcon, model: Option<&str>) -> Agent<CompletionMo
         .tool(GetAssemblers::new(rcon.clone()))
         .tool(GetFurnaces::new(rcon.clone()))
         .tool(GetRecipe::new(rcon.clone()))
-        .default_max_turns(10)
-        .build()
+        .default_max_turns(10);
+
+    for article in wiki_articles {
+        builder = builder.context(article);
+    }
+
+    builder.build()
 }

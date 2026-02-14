@@ -1,8 +1,7 @@
 //! In-game chat bridge: polls `/sensei_poll` for player messages, routes them
 //! through the coaching agent, and delivers responses via `/sensei_respond`.
 
-use std::collections::HashMap;
-use std::time::Duration;
+use std::{collections::HashMap, time::Duration};
 
 use rig::{
     agent::Agent,
@@ -28,11 +27,7 @@ struct CoachMessage {
 /// Polls the Factorio mod for unread `/coach` messages, sends each through the
 /// coaching agent, and delivers responses back to game chat. Runs indefinitely
 /// until the runtime shuts down.
-pub async fn run(
-    rcon: SharedRcon,
-    coach: Agent<CompletionModel>,
-    poll_interval: Duration,
-) {
+pub async fn run(rcon: SharedRcon, coach: Agent<CompletionModel>, poll_interval: Duration) {
     let mut histories: HashMap<String, Vec<Message>> = HashMap::new();
     let mut consecutive_errors: u32 = 0;
 
@@ -49,9 +44,7 @@ pub async fn run(
                 if consecutive_errors <= 3 {
                     eprintln!("{DIM}[Bridge] Poll error: {e}{RESET}");
                 } else if consecutive_errors == 4 {
-                    eprintln!(
-                        "{DIM}[Bridge] Repeated errors, backing off to 10s intervals{RESET}"
-                    );
+                    eprintln!("{DIM}[Bridge] Repeated errors, backing off to 10s intervals{RESET}");
                 }
             }
         }
@@ -90,10 +83,7 @@ async fn handle_message(
     histories: &mut HashMap<String, Vec<Message>>,
     msg: &CoachMessage,
 ) {
-    eprintln!(
-        "{DIM}[Bridge] {}: {}{RESET}",
-        msg.player, msg.message
-    );
+    eprintln!("{DIM}[Bridge] {}: {}{RESET}", msg.player, msg.message);
 
     let history = histories.entry(msg.player.clone()).or_default();
     let prompt = format!(
@@ -110,8 +100,11 @@ async fn handle_message(
         }
         Err(e) => {
             eprintln!("{DIM}[Bridge] Agent error: {e}{RESET}");
-            let _ = send_response(rcon, "Sorry, I encountered an error processing your question.")
-                .await;
+            let _ = send_response(
+                rcon,
+                "Sorry, I encountered an error processing your question.",
+            )
+            .await;
         }
     }
 }

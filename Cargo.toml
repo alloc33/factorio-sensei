@@ -89,3 +89,4 @@ too_many_lines = "warn"
 
 [dev-dependencies]
 tokio = { version = "1", features = ["full"] }
+tempfile = "3"

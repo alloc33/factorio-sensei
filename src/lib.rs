@@ -1,6 +1,7 @@
 pub mod agent;
 pub mod bridge;
 pub mod error;
+pub mod knowledge;
 pub mod lua;
 pub mod rcon_ext;
 pub mod tools;
