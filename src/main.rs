@@ -26,5 +26,19 @@ fn main() -> anyhow::Result<()> {
 
     let coach = agent::build_coach(&rcon, cli.model.as_deref());
 
+    if cli.bridge {
+        let bridge_rcon = rcon.clone();
+        let bridge_coach = coach.clone();
+        rt.spawn(async move {
+            factorio_sensei::bridge::run(
+                bridge_rcon,
+                bridge_coach,
+                std::time::Duration::from_secs(2),
+            )
+            .await;
+        });
+        eprintln!("{DIM}In-game /coach bridge enabled.{RESET}");
+    }
+
     repl::run(&rt, &coach)
 }

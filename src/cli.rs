@@ -15,4 +15,8 @@ pub struct Cli {
     /// Claude model override
     #[arg(long, env = "FACTORIO_MODEL")]
     pub model: Option<String>,
+
+    /// Enable in-game chat bridge (requires factorio-sensei mod installed)
+    #[arg(long, env = "FACTORIO_BRIDGE")]
+    pub bridge: bool,
 }
