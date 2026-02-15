@@ -1,5 +1,6 @@
-use std::{borrow::Cow, path::PathBuf};
+use std::{borrow::Cow, path::PathBuf, time::Duration};
 
+use indicatif::{ProgressBar, ProgressStyle};
 use reedline::{FileBackedHistory, Prompt, PromptEditMode, PromptHistorySearch, Reedline, Signal};
 use rig::{
     agent::Agent,
@@ -85,9 +86,36 @@ fn handle_prompt(
     history: &mut Vec<Message>,
     input: &str,
 ) {
+    let spinner = ProgressBar::new_spinner();
+    spinner.set_style(
+        ProgressStyle::default_spinner()
+            .tick_strings(&[
+                &format!("{CYAN_BOLD}⠋{RESET}"),
+                &format!("{CYAN_BOLD}⠙{RESET}"),
+                &format!("{CYAN_BOLD}⠹{RESET}"),
+                &format!("{CYAN_BOLD}⠸{RESET}"),
+                &format!("{CYAN_BOLD}⠼{RESET}"),
+                &format!("{CYAN_BOLD}⠴{RESET}"),
+                &format!("{CYAN_BOLD}⠦{RESET}"),
+                &format!("{CYAN_BOLD}⠧{RESET}"),
+                &format!("{CYAN_BOLD}⠇{RESET}"),
+                &format!("{CYAN_BOLD}⠏{RESET}"),
+            ])
+            .template("{spinner} {msg}")
+            .expect("valid template"),
+    );
+    spinner.set_message(format!("{CYAN_BOLD}Thinking...{RESET}"));
+    spinner.enable_steady_tick(Duration::from_millis(80));
+
     match rt.block_on(async { coach.prompt(input).with_history(history).await }) {
-        Ok(response) => println!("\n{GREEN_BOLD}Sensei>{RESET} {response}\n"),
-        Err(e) => eprintln!("\n{RED_BOLD}[Error]{RESET} {e}\n"),
+        Ok(response) => {
+            spinner.finish_and_clear();
+            println!("\n{GREEN_BOLD}Sensei>{RESET} {response}\n");
+        }
+        Err(e) => {
+            spinner.finish_and_clear();
+            eprintln!("\n{RED_BOLD}[Error]{RESET} {e}\n");
+        }
     }
 }
 
