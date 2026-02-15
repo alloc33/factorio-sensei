@@ -7,11 +7,13 @@ use rig::{
     completion::{Message, Prompt as RigPrompt},
     providers::anthropic::completion::CompletionModel,
 };
+use termimad::{crossterm::style::Color, MadSkin};
 
 const GREEN_BOLD: &str = "\x1b[1;32m";
 const RED_BOLD: &str = "\x1b[1;31m";
 const CYAN_BOLD: &str = "\x1b[1;36m";
 const DIM: &str = "\x1b[2m";
+const GRAY: &str = "\x1b[38;5;245m";
 const RESET: &str = "\x1b[0m";
 
 const STATUS_PROMPT: &str = "Give me a quick status overview: check my position, \
@@ -78,6 +80,21 @@ fn print_help() {
     );
 }
 
+// ── Markdown skin ─────────────────────────────────────────────
+
+fn build_skin() -> MadSkin {
+    let mut skin = MadSkin::default();
+    skin.bold.set_fg(Color::White);
+    skin.italic.set_fg(Color::AnsiValue(183)); // light purple
+    skin.headers[0].set_fg(Color::Cyan);
+    skin.headers[1].set_fg(Color::Cyan);
+    skin.headers[2].set_fg(Color::Cyan);
+    skin.bullet = termimad::StyledChar::from_fg_char(Color::Green, '•');
+    skin.code_block.set_fg(Color::AnsiValue(222)); // warm yellow
+    skin.inline_code.set_fg(Color::AnsiValue(222));
+    skin
+}
+
 // ── Agent interaction ──────────────────────────────────────────
 
 fn handle_prompt(
@@ -90,27 +107,30 @@ fn handle_prompt(
     spinner.set_style(
         ProgressStyle::default_spinner()
             .tick_strings(&[
-                &format!("{CYAN_BOLD}⠋{RESET}"),
-                &format!("{CYAN_BOLD}⠙{RESET}"),
-                &format!("{CYAN_BOLD}⠹{RESET}"),
-                &format!("{CYAN_BOLD}⠸{RESET}"),
-                &format!("{CYAN_BOLD}⠼{RESET}"),
-                &format!("{CYAN_BOLD}⠴{RESET}"),
-                &format!("{CYAN_BOLD}⠦{RESET}"),
-                &format!("{CYAN_BOLD}⠧{RESET}"),
-                &format!("{CYAN_BOLD}⠇{RESET}"),
-                &format!("{CYAN_BOLD}⠏{RESET}"),
+                &format!("{GRAY}⠋{RESET}"),
+                &format!("{GRAY}⠙{RESET}"),
+                &format!("{GRAY}⠹{RESET}"),
+                &format!("{GRAY}⠸{RESET}"),
+                &format!("{GRAY}⠼{RESET}"),
+                &format!("{GRAY}⠴{RESET}"),
+                &format!("{GRAY}⠦{RESET}"),
+                &format!("{GRAY}⠧{RESET}"),
+                &format!("{GRAY}⠇{RESET}"),
+                &format!("{GRAY}⠏{RESET}"),
             ])
             .template("{spinner} {msg}")
             .expect("valid template"),
     );
-    spinner.set_message(format!("{CYAN_BOLD}Thinking...{RESET}"));
+    spinner.set_message(format!("{GRAY}Thinking...{RESET}"));
     spinner.enable_steady_tick(Duration::from_millis(80));
 
     match rt.block_on(async { coach.prompt(input).with_history(history).await }) {
         Ok(response) => {
             spinner.finish_and_clear();
-            println!("\n{GREEN_BOLD}Sensei>{RESET} {response}\n");
+            let skin = build_skin();
+            println!("\n{GREEN_BOLD}Sensei>{RESET}");
+            skin.print_text(&response);
+            println!();
         }
         Err(e) => {
             spinner.finish_and_clear();

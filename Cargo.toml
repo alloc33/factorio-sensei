@@ -16,6 +16,7 @@ dotenvy = "0.15"
 reedline = "0.38"
 clap = { version = "4", features = ["derive", "env"] }
 indicatif = "0.17"
+termimad = "0.31"
 
 [lints.rust]
 unused_imports = "deny"
