@@ -83,7 +83,8 @@ pub fn power_stats() -> String {
          end \
          local satisfaction = 1.0 \
          if cons > 0 then satisfaction = math.min(1.0, prod / cons) end \
-         return {{production_watts=prod*60, consumption_watts=cons*60, satisfaction=satisfaction}} \
+         return {{production_watts=prod*60, consumption_watts=cons*60, satisfaction=satisfaction, \
+           note=\"satisfaction 1.0 means all demand is met (good). Below 1.0 means brownouts. production_watts is max available capacity, consumption_watts is current demand.\"}} \
          end)()"
     )
 }

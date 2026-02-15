@@ -1,6 +1,6 @@
 [package]
 name = "factorio-sensei"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 description = "AI coaching copilot for Factorio 2.x — connects to your live game via RCON and gives real-time advice powered by Claude"
 license = "MIT"
