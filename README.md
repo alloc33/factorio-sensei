@@ -1,4 +1,4 @@
-<!-- TODO: AI-generated banner image -->
+![Factorio Sensei](assets/factorio-sensei.jpg)
 
 # Factorio Sensei
 
@@ -45,7 +45,7 @@ Built-in commands:
 - `/clear` — clear conversation history
 - `/quit` — exit
 
-<!-- TODO: Screenshot of terminal REPL session with colored markdown output -->
+![Terminal REPL](assets/factorio-sensei-terminal.png)
 
 ### In-Game Chat (`/sensei`)
 
@@ -58,7 +58,7 @@ factorio-sensei install-mod    # one-time setup
 factorio-sensei --password <rcon-pass> --bridge
 ```
 
-<!-- TODO: Screenshot of in-game /sensei conversation in Factorio's chat window -->
+![In-game chat bridge](assets/factorio-sensei-bridge.gif)
 
 ## Quick Start
 
@@ -148,9 +148,9 @@ The `ANTHROPIC_API_KEY` environment variable is required and has no CLI flag.
 
 ```
 ┌─────────────┐     RCON      ┌──────────────────┐   Anthropic API   ┌─────────┐
-│  Factorio   │◄────────────►│  factorio-sensei  │◄────────────────►│  Claude  │
-│   (2.x)     │              │  (10 game tools)   │                  │  (LLM)   │
-└─────────────┘              └──────────────────┘                  └─────────┘
+│  Factorio   │◄────────────► │  factorio-sensei │◄────────────────► │  Claude │
+│   (2.x)     │               │  (10 game tools) │                   │  (LLM)  │
+└─────────────┘               └──────────────────┘                   └─────────┘
        ▲                       │              │
        │  /sensei command      │              │  Embedded knowledge base
        └── Lua mod ────────────┘              │  (mechanics, ratios, formulas)
