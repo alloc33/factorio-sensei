@@ -16,7 +16,7 @@ pub type SharedRcon = Arc<Mutex<RconClient>>;
 /// The IIFE should return a plain Lua table (no userdata).
 /// This function checks for `{"error":"no_player"}` and converts it to `SenseiError::NoPlayer`.
 pub async fn execute_lua_json(rcon: &SharedRcon, lua_iife: &str) -> Result<String, SenseiError> {
-    let command = format!("/c rcon.print(helpers.table_to_json({lua_iife}))");
+    let command = format!("/silent-command rcon.print(helpers.table_to_json({lua_iife}))");
 
     let response = rcon.lock().await.execute(&command).await?;
 

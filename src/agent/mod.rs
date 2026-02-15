@@ -22,9 +22,21 @@ pub fn build_coach(
     let client = anthropic::Client::from_env();
     let model = model.unwrap_or(DEFAULT_MODEL);
 
-    let mut builder = client
+    let preamble = if wiki_articles.is_empty() {
+        prompts::COACH_SYSTEM_PROMPT.to_string()
+    } else {
+        let mut parts = vec![prompts::COACH_SYSTEM_PROMPT.to_string()];
+        parts.push("\n\n--- KNOWLEDGE BASE ---\nUse the following verified reference material for exact ratios, formulas, and game mechanics.\n".to_string());
+        for article in wiki_articles {
+            parts.push(article.clone());
+            parts.push("\n---\n".to_string());
+        }
+        parts.concat()
+    };
+
+    client
         .agent(model)
-        .preamble(prompts::COACH_SYSTEM_PROMPT)
+        .preamble(&preamble)
         .tool(GetPlayerPosition::new(rcon.clone()))
         .tool(GetPlayerInventory::new(rcon.clone()))
         .tool(GetProductionStats::new(rcon.clone()))
@@ -35,11 +47,6 @@ pub fn build_coach(
         .tool(GetAssemblers::new(rcon.clone()))
         .tool(GetFurnaces::new(rcon.clone()))
         .tool(GetRecipe::new(rcon.clone()))
-        .default_max_turns(10);
-
-    for article in wiki_articles {
-        builder = builder.context(article);
-    }
-
-    builder.build()
+        .default_max_turns(10)
+        .build()
 }

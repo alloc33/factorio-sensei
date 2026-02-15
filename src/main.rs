@@ -12,6 +12,7 @@ const DIM: &str = "\x1b[2m";
 const RESET: &str = "\x1b[0m";
 
 fn main() -> anyhow::Result<()> {
+    let _ = dotenvy::dotenv();
     let cli = cli::Cli::parse();
     let rt = tokio::runtime::Runtime::new()?;
 
@@ -43,6 +44,7 @@ fn main() -> anyhow::Result<()> {
     let model_name = cli.model.as_deref().unwrap_or(agent::DEFAULT_MODEL);
     eprintln!("{DIM}Connected! Model: {model_name}. Type /help for commands.{RESET}\n");
 
+    let _rt_guard = rt.enter();
     let coach = agent::build_coach(&rcon, cli.model.as_deref(), &wiki_articles);
 
     if cli.bridge {
