@@ -24,6 +24,15 @@ fn main() -> anyhow::Result<()> {
         return Ok(());
     }
 
+    if std::env::var("ANTHROPIC_API_KEY").is_err() {
+        eprintln!("\x1b[1;31mError:{RESET} ANTHROPIC_API_KEY not set.\n");
+        eprintln!("Get your API key at: https://console.anthropic.com/settings/keys\n");
+        eprintln!("Then either:");
+        eprintln!("  export ANTHROPIC_API_KEY=sk-ant-...");
+        eprintln!("  or create a .env file with: ANTHROPIC_API_KEY=sk-ant-...\n");
+        std::process::exit(1);
+    }
+
     let rt = tokio::runtime::Runtime::new()?;
 
     eprintln!("{DIM}Connecting to Factorio RCON at {}...{RESET}", cli.addr);
