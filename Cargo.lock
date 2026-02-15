@@ -495,6 +495,8 @@ dependencies = [
 [[package]]
 name = "factorio-rcon"
 version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "de39e65f93da06fe0960c13c4195785c2aacbabef539cbcdc8c9f8115d6d86ae"
 dependencies = [
  "thiserror 2.0.18",
  "tokio",

@@ -1,5 +1,5 @@
-/// System prompt that defines the coaching personality and behavioral rules.
-pub const COACH_SYSTEM_PROMPT: &str = "\
+/// System prompt that defines Sensei's personality and behavioral rules.
+pub const SENSEI_SYSTEM_PROMPT: &str = "\
 You are Factorio Sensei, an expert Factorio 2.x coach. You observe the player's game via tools \
 and teach them to play optimally.
 

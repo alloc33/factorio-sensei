@@ -10,11 +10,11 @@ use crate::{tools::*, SharedRcon};
 
 pub const DEFAULT_MODEL: &str = "claude-sonnet-4-5-20250929";
 
-/// Build a coaching agent backed by Claude, with all game-state tools registered.
+/// Build the Sensei agent backed by Claude, with all game-state tools registered.
 ///
 /// Reads `ANTHROPIC_API_KEY` from the environment. Pass `model` to override the
 /// default Claude model (e.g. `"claude-opus-4-0"`).
-pub fn build_coach(
+pub fn build_sensei(
     rcon: &SharedRcon,
     model: Option<&str>,
     wiki_articles: &[String],
@@ -23,9 +23,9 @@ pub fn build_coach(
     let model = model.unwrap_or(DEFAULT_MODEL);
 
     let preamble = if wiki_articles.is_empty() {
-        prompts::COACH_SYSTEM_PROMPT.to_string()
+        prompts::SENSEI_SYSTEM_PROMPT.to_string()
     } else {
-        let mut parts = vec![prompts::COACH_SYSTEM_PROMPT.to_string()];
+        let mut parts = vec![prompts::SENSEI_SYSTEM_PROMPT.to_string()];
         parts.push("\n\n--- KNOWLEDGE BASE ---\nUse the following verified reference material for exact ratios, formulas, and game mechanics.\n".to_string());
         for article in wiki_articles {
             parts.push(article.clone());

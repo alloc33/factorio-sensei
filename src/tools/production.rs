@@ -1,7 +1,7 @@
 //! Tool for querying cumulative production/consumption of a specific item.
 //!
 //! Uses `force.get_item_production_statistics("nauvis")` to read the all-time
-//! input (produced) and output (consumed) counts. The coach can compare these
+//! input (produced) and output (consumed) counts. Sensei can compare these
 //! to spot bottlenecks (e.g. consuming more iron plates than producing).
 
 use rig::{completion::ToolDefinition, tool::Tool};

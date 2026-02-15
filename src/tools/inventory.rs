@@ -1,7 +1,7 @@
 //! Tool for listing the player's main inventory contents.
 //!
 //! Iterates every slot in `get_main_inventory()`, aggregates stacks of the
-//! same item, and returns `[{name, count}]`. Lets the coach check whether
+//! same item, and returns `[{name, count}]`. Lets Sensei check whether
 //! the player has enough materials for a suggested build.
 
 use rig::{completion::ToolDefinition, tool::Tool};

@@ -1,5 +1,5 @@
 //! In-game chat bridge: polls `/sensei_poll` for player messages, routes them
-//! through the coaching agent, and delivers responses via `/sensei_respond`.
+//! through the Sensei agent, and delivers responses via `/sensei_respond`.
 
 use std::{collections::HashMap, time::Duration};
 
@@ -15,19 +15,19 @@ use crate::SharedRcon;
 const DIM: &str = "\x1b[2m";
 const RESET: &str = "\x1b[0m";
 
-/// A queued message from a player's `/coach` command.
+/// A queued message from a player's `/sensei` command.
 #[derive(Debug, Deserialize)]
-struct CoachMessage {
+struct SenseiMessage {
     player: String,
     message: String,
 }
 
 /// Run the in-game chat bridge polling loop.
 ///
-/// Polls the Factorio mod for unread `/coach` messages, sends each through the
-/// coaching agent, and delivers responses back to game chat. Runs indefinitely
+/// Polls the Factorio mod for unread `/sensei` messages, sends each through the
+/// Sensei agent, and delivers responses back to game chat. Runs indefinitely
 /// until the runtime shuts down.
-pub async fn run(rcon: SharedRcon, coach: Agent<CompletionModel>, poll_interval: Duration) {
+pub async fn run(rcon: SharedRcon, sensei: Agent<CompletionModel>, poll_interval: Duration) {
     let mut histories: HashMap<String, Vec<Message>> = HashMap::new();
     let mut consecutive_errors: u32 = 0;
 
@@ -36,7 +36,7 @@ pub async fn run(rcon: SharedRcon, coach: Agent<CompletionModel>, poll_interval:
             Ok(messages) => {
                 consecutive_errors = 0;
                 for msg in messages {
-                    handle_message(&rcon, &coach, &mut histories, &msg).await;
+                    handle_message(&rcon, &sensei, &mut histories, &msg).await;
                 }
             }
             Err(e) => {
@@ -59,7 +59,7 @@ pub async fn run(rcon: SharedRcon, coach: Agent<CompletionModel>, poll_interval:
 }
 
 /// Execute `/sensei_poll` and parse the JSON response into messages.
-async fn poll_messages(rcon: &SharedRcon) -> Result<Vec<CoachMessage>, BridgeError> {
+async fn poll_messages(rcon: &SharedRcon) -> Result<Vec<SenseiMessage>, BridgeError> {
     let response = rcon.lock().await.execute("/sensei_poll").await?;
     let trimmed = response.trim();
 
@@ -72,16 +72,16 @@ async fn poll_messages(rcon: &SharedRcon) -> Result<Vec<CoachMessage>, BridgeErr
         return Err(BridgeError::Lua(trimmed.to_string()));
     }
 
-    let messages: Vec<CoachMessage> = serde_json::from_str(trimmed)?;
+    let messages: Vec<SenseiMessage> = serde_json::from_str(trimmed)?;
     Ok(messages)
 }
 
 /// Send a player message through the agent and deliver the response in-game.
 async fn handle_message(
     rcon: &SharedRcon,
-    coach: &Agent<CompletionModel>,
+    sensei: &Agent<CompletionModel>,
     histories: &mut HashMap<String, Vec<Message>>,
-    msg: &CoachMessage,
+    msg: &SenseiMessage,
 ) {
     eprintln!("{DIM}[Bridge] {}: {}{RESET}", msg.player, msg.message);
 
@@ -91,7 +91,7 @@ async fn handle_message(
         msg.player, msg.message
     );
 
-    match coach.prompt(&prompt).with_history(history).await {
+    match sensei.prompt(&prompt).with_history(history).await {
         Ok(response) => {
             let sanitized = sanitize_for_game(&response);
             if let Err(e) = send_response(rcon, &sanitized).await {
@@ -109,7 +109,7 @@ async fn handle_message(
     }
 }
 
-/// Send a coaching response back to game chat via `/sensei_respond`.
+/// Send a Sensei response back to game chat via `/sensei_respond`.
 async fn send_response(rcon: &SharedRcon, message: &str) -> Result<(), BridgeError> {
     let command = format!("/sensei_respond {message}");
     rcon.lock().await.execute(&command).await?;
@@ -293,12 +293,12 @@ mod tests {
         assert!(result.contains("assembler"));
     }
 
-    // ── CoachMessage deserialization tests ────────────────────────
+    // ── SenseiMessage deserialization tests ────────────────────────
 
     #[test]
     fn deserialize_single_message() {
         let json = r#"[{"player":"nick","message":"what now?","tick":12345}]"#;
-        let msgs: Vec<CoachMessage> = serde_json::from_str(json).unwrap();
+        let msgs: Vec<SenseiMessage> = serde_json::from_str(json).unwrap();
         assert_eq!(msgs.len(), 1);
         assert_eq!(msgs[0].player, "nick");
         assert_eq!(msgs[0].message, "what now?");
@@ -310,7 +310,7 @@ mod tests {
             {"player":"alice","message":"help","tick":100},
             {"player":"bob","message":"tips?","tick":200}
         ]"#;
-        let msgs: Vec<CoachMessage> = serde_json::from_str(json).unwrap();
+        let msgs: Vec<SenseiMessage> = serde_json::from_str(json).unwrap();
         assert_eq!(msgs.len(), 2);
         assert_eq!(msgs[1].player, "bob");
     }
@@ -318,7 +318,7 @@ mod tests {
     #[test]
     fn deserialize_empty_array() {
         let json = "[]";
-        let msgs: Vec<CoachMessage> = serde_json::from_str(json).unwrap();
+        let msgs: Vec<SenseiMessage> = serde_json::from_str(json).unwrap();
         assert!(msgs.is_empty());
     }
 }

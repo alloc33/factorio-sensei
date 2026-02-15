@@ -2,7 +2,7 @@
 -- Registers /sensei for player questions, /sensei_poll and /sensei_respond for the Rust bridge.
 
 local function init_storage()
-  storage.coach_messages = storage.coach_messages or {}
+  storage.sensei_messages = storage.sensei_messages or {}
 end
 
 script.on_init(function()
@@ -26,7 +26,7 @@ commands.add_command("sensei", "Ask the Factorio Sensei AI coach a question", fu
       return
     end
 
-    table.insert(storage.coach_messages, {
+    table.insert(storage.sensei_messages, {
       player = player.name,
       message = question,
       tick = game.tick,
@@ -44,7 +44,7 @@ end)
 commands.add_command("sensei_poll", nil, function(cmd)
   local ok, err = pcall(function()
     local unread = {}
-    for _, msg in ipairs(storage.coach_messages) do
+    for _, msg in ipairs(storage.sensei_messages) do
       if not msg.read then
         unread[#unread + 1] = { player = msg.player, message = msg.message, tick = msg.tick }
         msg.read = true
@@ -76,10 +76,10 @@ end)
 -- Periodic cleanup: remove read messages older than 5 minutes (18000 ticks)
 script.on_nth_tick(1800, function()
   local fresh, now = {}, game.tick
-  for _, msg in ipairs(storage.coach_messages) do
+  for _, msg in ipairs(storage.sensei_messages) do
     if not msg.read or (now - msg.tick) < 18000 then
       fresh[#fresh + 1] = msg
     end
   end
-  storage.coach_messages = fresh
+  storage.sensei_messages = fresh
 end)

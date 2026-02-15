@@ -21,9 +21,9 @@ const STATUS_PROMPT: &str = "Give me a quick status overview: check my position,
 
 // ── Custom prompt ──────────────────────────────────────────────
 
-struct CoachPrompt;
+struct SenseiPrompt;
 
-impl Prompt for CoachPrompt {
+impl Prompt for SenseiPrompt {
     fn render_prompt_left(&self) -> Cow<'_, str> {
         Cow::Borrowed("\x1b[1;36mYou\x1b[0m")
     }
@@ -99,7 +99,7 @@ fn build_skin() -> MadSkin {
 
 fn handle_prompt(
     rt: &tokio::runtime::Runtime,
-    coach: &Agent<CompletionModel>,
+    sensei: &Agent<CompletionModel>,
     history: &mut Vec<Message>,
     input: &str,
 ) {
@@ -124,7 +124,7 @@ fn handle_prompt(
     spinner.set_message(format!("{GRAY}Thinking...{RESET}"));
     spinner.enable_steady_tick(Duration::from_millis(80));
 
-    match rt.block_on(async { coach.prompt(input).with_history(history).await }) {
+    match rt.block_on(async { sensei.prompt(input).with_history(history).await }) {
         Ok(response) => {
             spinner.finish_and_clear();
             let skin = build_skin();
@@ -141,9 +141,9 @@ fn handle_prompt(
 
 // ── Public entry point ─────────────────────────────────────────
 
-pub fn run(rt: &tokio::runtime::Runtime, coach: &Agent<CompletionModel>) -> anyhow::Result<()> {
+pub fn run(rt: &tokio::runtime::Runtime, sensei: &Agent<CompletionModel>) -> anyhow::Result<()> {
     let mut editor = build_editor();
-    let prompt = CoachPrompt;
+    let prompt = SenseiPrompt;
     let mut chat_history: Vec<Message> = Vec::new();
 
     loop {
@@ -162,9 +162,9 @@ pub fn run(rt: &tokio::runtime::Runtime, coach: &Agent<CompletionModel>) -> anyh
                         println!("{DIM}Conversation history cleared.{RESET}");
                     }
                     "/status" => {
-                        handle_prompt(rt, coach, &mut chat_history, STATUS_PROMPT);
+                        handle_prompt(rt, sensei, &mut chat_history, STATUS_PROMPT);
                     }
-                    _ => handle_prompt(rt, coach, &mut chat_history, input),
+                    _ => handle_prompt(rt, sensei, &mut chat_history, input),
                 }
             }
             Ok(Signal::CtrlD | Signal::CtrlC) => break,

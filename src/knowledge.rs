@@ -1,5 +1,13 @@
 use std::path::Path;
 
+const BUILTIN_MECHANICS: &str = include_str!("../data/wiki/factorio-mechanics.md");
+const BUILTIN_QUICK_REF: &str = include_str!("../data/wiki/factorio-quick-reference.md");
+
+/// Return the built-in knowledge articles embedded at compile time.
+pub fn builtin_articles() -> Vec<String> {
+    vec![BUILTIN_MECHANICS.to_string(), BUILTIN_QUICK_REF.to_string()]
+}
+
 /// Load all `.md` files from a directory and return their contents.
 ///
 /// Files are returned in sorted order by filename for deterministic context injection.

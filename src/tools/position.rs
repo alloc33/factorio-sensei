@@ -1,7 +1,7 @@
 //! Tool for retrieving the player's current world position.
 //!
 //! Queries `connected_players[1].position` and the surface name via RCON.
-//! Useful for the coach to understand where the player is and what they're
+//! Useful for Sensei to understand where the player is and what they're
 //! likely working on (e.g. near ore patches, at main bus, exploring).
 
 use rig::{completion::ToolDefinition, tool::Tool};

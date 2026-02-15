@@ -22,44 +22,40 @@ fn main() -> anyhow::Result<()> {
         Ok::<_, anyhow::Error>(Arc::new(Mutex::new(client)))
     })?;
 
+    let mut wiki_articles = factorio_sensei::knowledge::builtin_articles();
     let wiki_dir = std::path::Path::new("data/wiki");
-    let wiki_articles = if wiki_dir.exists() {
+    if wiki_dir.exists() {
         match factorio_sensei::knowledge::load_wiki_articles(wiki_dir) {
-            Ok(articles) => {
-                eprintln!(
-                    "{DIM}Loaded {} knowledge article(s).{RESET}",
-                    articles.len()
-                );
-                articles
-            }
+            Ok(extra) => wiki_articles.extend(extra),
             Err(e) => {
-                eprintln!("{DIM}Warning: could not load wiki ({e}), continuing without knowledge base.{RESET}");
-                Vec::new()
+                eprintln!("{DIM}Warning: could not load extra wiki ({e}){RESET}");
             }
         }
-    } else {
-        Vec::new()
-    };
+    }
+    eprintln!(
+        "{DIM}Loaded {} knowledge article(s).{RESET}",
+        wiki_articles.len()
+    );
 
     let model_name = cli.model.as_deref().unwrap_or(agent::DEFAULT_MODEL);
     eprintln!("{DIM}Connected! Model: {model_name}. Type /help for commands.{RESET}\n");
 
     let _rt_guard = rt.enter();
-    let coach = agent::build_coach(&rcon, cli.model.as_deref(), &wiki_articles);
+    let sensei = agent::build_sensei(&rcon, cli.model.as_deref(), &wiki_articles);
 
     if cli.bridge {
         let bridge_rcon = rcon.clone();
-        let bridge_coach = coach.clone();
+        let bridge_sensei = sensei.clone();
         rt.spawn(async move {
             factorio_sensei::bridge::run(
                 bridge_rcon,
-                bridge_coach,
+                bridge_sensei,
                 std::time::Duration::from_secs(2),
             )
             .await;
         });
-        eprintln!("{DIM}In-game /coach bridge enabled.{RESET}");
+        eprintln!("{DIM}In-game /sensei bridge enabled.{RESET}");
     }
 
-    repl::run(&rt, &coach)
+    repl::run(&rt, &sensei)
 }
