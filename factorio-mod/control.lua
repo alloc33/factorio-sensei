@@ -1,5 +1,5 @@
 -- Factorio Sensei — in-game chat bridge
--- Registers /coach for player questions, /sensei_poll and /sensei_respond for the Rust bridge.
+-- Registers /sensei for player questions, /sensei_poll and /sensei_respond for the Rust bridge.
 
 local function init_storage()
   storage.coach_messages = storage.coach_messages or {}
@@ -7,22 +7,22 @@ end
 
 script.on_init(function()
   init_storage()
-  game.print("[Sensei] Factorio Sensei mod loaded. Type /coach <question> for coaching advice.")
+  game.print("[Sensei] Factorio Sensei mod loaded. Type /sensei <question> for coaching advice.")
 end)
 
 script.on_configuration_changed(function()
   init_storage()
 end)
 
--- /coach <question> — player-facing command
-commands.add_command("coach", "Ask the Factorio Sensei AI coach a question", function(cmd)
+-- /sensei <question> — player-facing command
+commands.add_command("sensei", "Ask the Factorio Sensei AI coach a question", function(cmd)
   local ok, err = pcall(function()
     local player = cmd.player_index and game.players[cmd.player_index]
     if not player or not player.valid then return end
 
     local question = cmd.parameter
     if not question or question == "" then
-      player.print("[Sensei] Usage: /coach <your question>", { color = { r = 1, g = 0.8, b = 0.2 } })
+      player.print("[Sensei] Usage: /sensei <your question>", { color = { r = 1, g = 0.8, b = 0.2 } })
       return
     end
 
