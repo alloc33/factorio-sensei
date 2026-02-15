@@ -68,15 +68,22 @@ pub fn power_stats() -> String {
          if #poles == 0 then \
            return {{production_watts=0, consumption_watts=0, satisfaction=1.0}} \
          end \
-         local network = poles[1].electric_network_statistics \
-         if not network then \
+         local stats = poles[1].electric_network_statistics \
+         if not stats then \
            return {{production_watts=0, consumption_watts=0, satisfaction=1.0}} \
          end \
-         local prod = network.get_flow_count{{input=true, precision_index=defines.flow_precision_index.one_second}} \
-         local cons = network.get_flow_count{{input=false, precision_index=defines.flow_precision_index.one_second}} \
+         local prec = defines.flow_precision_index.five_seconds \
+         local prod = 0 \
+         for name, _ in pairs(stats.output_counts) do \
+           prod = prod + stats.get_flow_count{{name=name, category=\"output\", precision_index=prec}} \
+         end \
+         local cons = 0 \
+         for name, _ in pairs(stats.input_counts) do \
+           cons = cons + stats.get_flow_count{{name=name, category=\"input\", precision_index=prec}} \
+         end \
          local satisfaction = 1.0 \
          if cons > 0 then satisfaction = math.min(1.0, prod / cons) end \
-         return {{production_watts=prod, consumption_watts=cons, satisfaction=satisfaction}} \
+         return {{production_watts=prod*60, consumption_watts=cons*60, satisfaction=satisfaction}} \
          end)()"
     )
 }
@@ -357,7 +364,10 @@ mod tests {
         assert!(lua.contains("electric-pole"));
         assert!(lua.contains("electric_network_statistics"));
         assert!(lua.contains("get_flow_count"));
-        assert!(lua.contains("precision_index=defines.flow_precision_index.one_second"));
+        assert!(lua.contains("defines.flow_precision_index.five_seconds"));
+        assert!(lua.contains("category"));
+        assert!(lua.contains("output_counts"));
+        assert!(lua.contains("input_counts"));
     }
 
     #[test]
