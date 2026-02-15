@@ -33,6 +33,7 @@ commands.add_command("sensei", "Ask the Factorio Sensei AI coach a question", fu
       read = false,
     })
 
+    player.print("[You] " .. question, { color = { r = 1, g = 1, b = 1 } })
     player.print("[Sensei] Thinking...", { color = { r = 0.5, g = 0.8, b = 1 } })
   end)
   if not ok then

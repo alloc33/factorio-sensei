@@ -100,13 +100,13 @@ To install the mod manually, copy the mod directory:
 
 ```bash
 # macOS
-cp -r factorio-mod ~/Library/Application\ Support/factorio/mods/factorio-sensei_0.1.3
+cp -r factorio-mod ~/Library/Application\ Support/factorio/mods/factorio-sensei_0.1.4
 
 # Linux
-cp -r factorio-mod ~/.factorio/mods/factorio-sensei_0.1.3
+cp -r factorio-mod ~/.factorio/mods/factorio-sensei_0.1.4
 
 # Windows
-xcopy factorio-mod "%APPDATA%\Factorio\mods\factorio-sensei_0.1.3" /E /I
+xcopy factorio-mod "%APPDATA%\Factorio\mods\factorio-sensei_0.1.4" /E /I
 ```
 
 ### Factorio RCON Setup
@@ -187,7 +187,7 @@ RCON is not active. Make sure you've enabled RCON in `config.ini` and are hostin
 Export your API key: `export ANTHROPIC_API_KEY=sk-ant-...` or add it to a `.env` file.
 
 **Mod not showing in Factorio**
-The mod directory must be named exactly `factorio-sensei_0.1.3`. Use `factorio-sensei install-mod` for automatic installation.
+The mod directory must be named exactly `factorio-sensei_0.1.4`. Use `factorio-sensei install-mod` for automatic installation.
 
 **In-game bridge not responding**
 Make sure you started with the `--bridge` flag and that the mod is enabled in your current save (check Mods menu in-game).
