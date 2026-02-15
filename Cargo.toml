@@ -2,6 +2,13 @@
 name = "factorio-sensei"
 version = "0.1.0"
 edition = "2021"
+description = "AI coaching copilot for Factorio 2.x — connects to your live game via RCON and gives real-time advice powered by Claude"
+license = "MIT"
+repository = "https://github.com/alloc33/factorio-sensei"
+homepage = "https://github.com/alloc33/factorio-sensei"
+keywords = ["factorio", "ai", "coaching", "rcon", "claude"]
+categories = ["games", "command-line-utilities"]
+readme = "README.md"
 
 [dependencies]
 factorio-rcon = "0.1"
