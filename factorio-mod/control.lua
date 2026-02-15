@@ -43,6 +43,7 @@ end)
 -- /sensei_poll — RCON-only, returns unread messages as JSON and marks them read
 commands.add_command("sensei_poll", nil, function(cmd)
   local ok, err = pcall(function()
+    init_storage()
     local unread = {}
     for _, msg in ipairs(storage.sensei_messages) do
       if not msg.read then
@@ -75,6 +76,7 @@ end)
 
 -- Periodic cleanup: remove read messages older than 5 minutes (18000 ticks)
 script.on_nth_tick(1800, function()
+  if not storage.sensei_messages then return end
   local fresh, now = {}, game.tick
   for _, msg in ipairs(storage.sensei_messages) do
     if not msg.read or (now - msg.tick) < 18000 then

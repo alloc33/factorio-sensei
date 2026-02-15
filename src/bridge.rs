@@ -41,6 +41,10 @@ pub async fn run(rcon: SharedRcon, sensei: Agent<CompletionModel>, poll_interval
             }
             Err(e) => {
                 consecutive_errors += 1;
+                // Silently exit on connection loss (game quit / /quit)
+                if matches!(&e, BridgeError::Rcon(_)) {
+                    return;
+                }
                 if consecutive_errors <= 3 {
                     eprintln!("{DIM}[Bridge] Poll error: {e}{RESET}");
                 } else if consecutive_errors == 4 {
@@ -63,7 +67,7 @@ async fn poll_messages(rcon: &SharedRcon) -> Result<Vec<SenseiMessage>, BridgeEr
     let response = rcon.lock().await.execute("/sensei_poll").await?;
     let trimmed = response.trim();
 
-    if trimmed.is_empty() || trimmed == "[]" {
+    if trimmed.is_empty() || trimmed == "[]" || trimmed == "{}" {
         return Ok(Vec::new());
     }
 
