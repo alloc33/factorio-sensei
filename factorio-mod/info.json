@@ -4,6 +4,6 @@
   "title": "Factorio Sensei",
   "author": "nshv",
   "factorio_version": "2.0",
-  "description": "In-game chat bridge for the Factorio Sensei AI coach. Adds /coach command.",
+  "description": "In-game chat bridge for the Factorio Sensei AI coach. Adds /sensei command.",
   "dependencies": ["base >= 2.0"]
 }

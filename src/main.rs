@@ -1,4 +1,5 @@
 mod cli;
+mod mod_install;
 mod repl;
 
 use std::sync::Arc;
@@ -10,10 +11,19 @@ use tokio::sync::Mutex;
 
 const DIM: &str = "\x1b[2m";
 const RESET: &str = "\x1b[0m";
+const GREEN_BOLD: &str = "\x1b[1;32m";
 
 fn main() -> anyhow::Result<()> {
     let _ = dotenvy::dotenv();
     let cli = cli::Cli::parse();
+
+    if cli.command == Some(cli::Command::InstallMod) {
+        let path = mod_install::install()?;
+        println!("{GREEN_BOLD}Mod installed to:{RESET} {}", path.display());
+        println!("{DIM}Restart Factorio and enable the mod in your save.{RESET}");
+        return Ok(());
+    }
+
     let rt = tokio::runtime::Runtime::new()?;
 
     eprintln!("{DIM}Connecting to Factorio RCON at {}...{RESET}", cli.addr);
