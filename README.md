@@ -6,7 +6,7 @@
 
 Sensei connects to your running Factorio game via RCON, reads your actual game state, and gives personalized coaching advice powered by Claude. It's not a generic chatbot — it sees your factory. Your inventory, production rates, power grid, research queue, nearby resources, assembler setups — Sensei reads it all and coaches you based on what's actually happening in your game.
 
-No other tool connects an AI to your live Factorio game state to coach you. Other projects either play the game autonomously or are chatbots with no game connection. Sensei observes and teaches.
+No copy-pasting screenshots into ChatGPT. No explaining your setup in a separate window. Sensei sees your game state directly — just ask a question and get advice based on what's actually in front of you.
 
 **What Sensei can see:**
 
