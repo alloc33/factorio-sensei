@@ -13,10 +13,10 @@ thiserror = "2"
 tracing = "0.1"
 anyhow = "1"
 dotenvy = "0.15"
-reedline = "0.38"
+reedline = "0.45"
 clap = { version = "4", features = ["derive", "env"] }
-indicatif = "0.17"
-termimad = "0.31"
+indicatif = "0.18"
+termimad = "0.34"
 
 [lints.rust]
 unused_imports = "deny"
